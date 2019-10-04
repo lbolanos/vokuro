@@ -216,7 +216,7 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `mustChangePassword`, `p
 DROP TABLE IF EXISTS `transactions`;
 CREATE TABLE IF NOT EXISTS `transactions` (
                                        `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-                                       `tx_date` datetime DEFAULT NULL,
+                                       `createdAt` datetime DEFAULT NULL,
                                        `usersId` int(10) unsigned NOT NULL,
                                        `type` char(1) NOT NULL,
                                        `amount` decimal(10,2)  NOT NULL,

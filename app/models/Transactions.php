@@ -26,6 +26,17 @@ class Transactions extends Model
      */
     public $usersId;
 
+
+	/**
+	 *
+	 * @var string
+	 */
+	public $description;
+
+	public $result;
+
+	public $success;
+
     /**
      *
      * @var string
@@ -56,4 +67,25 @@ class Transactions extends Model
             'alias' => 'user'
         ]);
     }
+
+
+	/**
+	 * @param $amount
+	 * @param $result
+	 * @param $description
+	 * @param $success
+	 * @param $userId
+	 * @param string $type
+	 */
+	public static function createTx($amount, $result, $description, $success, $userId, $type = Transactions::TYPE_DEPOSITO ) {
+		$tx = new Transactions();
+		$tx->amount = $amount;
+		$tx->result = $result;
+		$tx->type = $type;
+		$tx->description = $description;
+		$tx->createdAt = date('Y-m-d H:i:s');;
+		$tx->success = $success;
+		$tx->usersId = $userId;
+		$tx->save();
+	}
 }

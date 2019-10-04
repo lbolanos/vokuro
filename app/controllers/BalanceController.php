@@ -3,6 +3,7 @@ namespace Vokuro\Controllers;
 
 use Vokuro\Models\BasePHQLHelper;
 use Vokuro\Models\Profiles;
+use Vokuro\Models\Transactions;
 
 /**
  * View and define permissions for the various profile levels.
@@ -21,5 +22,6 @@ class BalanceController extends ControllerBase
 		$sql = 'SELECT accountBalance FROM users WHERE id = :identification';
 		$accountBalance = BasePHQLHelper::executeQueryNativeSelect(null, __FUNCTION__,$sql, \PDO::FETCH_ASSOC, null,[':identification' => $user->id]);
         $this->view->accountBalance = $accountBalance[0]['accountBalance'];
+		Transactions::createTx($this->view->accountBalance, "OK", "", "Y", $user->id,Transactions::TYPE_SALDO);
     }
 }

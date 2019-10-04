@@ -22,6 +22,12 @@ return new Config([
         ],
         'permissions' => [
             'index'
-        ]
+        ],'balance' => [
+			'index'
+		],'transferencia' => [
+			'index'
+		],'deposito' => [
+			'index'
+		]
     ]
 ]);

@@ -66,6 +66,9 @@ class Users extends Model
      */
     public $active;
 
+    /** @var float */
+	public $accountBalance;
+
     /**
      * Before create the user assign a password
      */

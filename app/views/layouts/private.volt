@@ -15,7 +15,10 @@
               'Home': null,
               'Users': 'users',
               'Profiles': 'profiles',
-              'Permissions': 'permissions'
+              'Permissions': 'permissions',
+              'Balance': 'balance',
+              'Transferencia': 'transferencia',
+              'Deposito': 'deposito'
             ] -%}
 
             {%- for key, value in menus %}

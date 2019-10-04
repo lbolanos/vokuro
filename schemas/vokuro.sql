@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `email_confirmations` (
   `modifiedAt` int(10) unsigned DEFAULT NULL,
   `confirmed` char(1) DEFAULT 'N',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS `failed_logins` (
   `attempted` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `usersId` (`usersId`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `password_changes` (
   `createdAt` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `usersId` (`usersId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `permissions` (
   `action` varchar(16) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `profilesId` (`profilesId`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=23 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=23 ;
 
 --
 -- Dumping data for table `permissions`
@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS `profiles` (
   `active` char(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `active` (`active`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `profiles`
@@ -144,7 +144,7 @@ CREATE TABLE IF NOT EXISTS `remember_tokens` (
   `createdAt` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `token` (`token`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -162,7 +162,7 @@ CREATE TABLE IF NOT EXISTS `reset_passwords` (
   `reset` char(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `usersId` (`usersId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -178,35 +178,48 @@ CREATE TABLE IF NOT EXISTS `success_logins` (
   `userAgent` varchar(120) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `usersId` (`usersId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `users`
 --
+-- Adminer 4.7.1 MySQL dump
 
 DROP TABLE IF EXISTS `users`;
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `password` char(60) NOT NULL,
-  `mustChangePassword` char(1) DEFAULT NULL,
-  `profilesId` int(10) unsigned NOT NULL,
-  `banned` char(1) NOT NULL,
-  `suspended` char(1) NOT NULL,
-  `active` char(1) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `profilesId` (`profilesId`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+CREATE TABLE `users` (
+                         `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                         `name` varchar(255) NOT NULL,
+                         `email` varchar(255) NOT NULL,
+                         `password` char(60) NOT NULL,
+                         `mustChangePassword` char(1) DEFAULT NULL,
+                         `profilesId` int(10) unsigned NOT NULL,
+                         `banned` char(1) NOT NULL,
+                         `suspended` char(1) NOT NULL,
+                         `active` char(1) DEFAULT NULL,
+                         `accountBalance` decimal(10,2) NOT NULL DEFAULT '0',
+                         PRIMARY KEY (`id`),
+                         KEY `profilesId` (`profilesId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `users`
---
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `mustChangePassword`, `profilesId`, `banned`, `suspended`, `active`, `amount`) VALUES
+(1,	'Bob Burnquist',	'bob@phalconphp.com',	'$2y$08$aFZ0bS9oS1I0MXFvVW5rZeU9eckKJprWddXxHAnMsdMGTXqIw28q6',	'N',	1,	'N',	'N',	'Y',	0),
+(2,	'Erik',	'erik@phalconphp.com',	'$2y$08$aFZ0bS9oS1I0MXFvVW5rZeU9eckKJprWddXxHAnMsdMGTXqIw28q6/EVOpnjjvAmbxxDxG3pbX.',	'N',	1,	'Y',	'Y',	'Y',	0),
+(3,	'Veronica',	'veronica@phalconphp.com',	'$2y$08$aFZ0bS9oS1I0MXFvVW5rZeU9eckKJprWddXxHAnMsdMGTXqIw28q6',	'N',	1,	'N',	'N',	'Y',	0),
+(4,	'Yukimi Nagano',	'yukimi@phalconphp.com',	'$2y$08$aFZ0bS9oS1I0MXFvVW5rZeU9eckKJprWddXxHAnMsdMGTXqIw28q6',	'N',	2,	'N',	'N',	'Y',	0),
+(5,	'Hector Leonardo Bolaños Munoz',	'leonardo.bolanos@gmail.com',	'$2y$08$aFZ0bS9oS1I0MXFvVW5rZeU9eckKJprWddXxHAnMsdMGTXqIw28q6',	'N',	1,	'N',	'N',	'Y',	0),
+(6,	'client',	'client@test.com',	'$2y$08$aFZ0bS9oS1I0MXFvVW5rZeU9eckKJprWddXxHAnMsdMGTXqIw28q6',	'Y',	3,	'N',	'N',	'Y',	0);
 
-INSERT INTO `users` (`id`, `name`, `email`, `password`, `mustChangePassword`, `profilesId`, `banned`, `suspended`, `active`) VALUES
-(1, 'Bob Burnquist', 'bob@phalconphp.com', '$2a$08$Lx1577KNhPa9lzFYKssadetmbhaveRtCoVaOnoXXxUIhrqlCJYWCW', 'N', 1, 'N', 'N', 'Y'),
-(2, 'Erik', 'erik@phalconphp.com', '$2a$08$f4llgFQQnhPKzpGmY1sOuuu23nYfXYM/EVOpnjjvAmbxxDxG3pbX.', 'N', 1, 'Y', 'Y', 'Y'),
-(3, 'Veronica', 'veronica@phalconphp.com', '$2a$08$NQjrh9fKdMHSdpzhMj0xcOSwJQwMfpuDMzgtRyA89ADKUbsFZ94C2', 'N', 1, 'N', 'N', 'Y'),
-(4, 'Yukimi Nagano', 'yukimi@phalconphp.com', '$2a$08$cxxpy4Jvt6Q3xGKgMWIILuf75RQDSroenvoB7L..GlXoGkVEMoSr.', 'N', 2, 'N', 'N', 'Y');
+-- 2019-10-04 01:49:56
+
+DROP TABLE IF EXISTS `transactions`;
+CREATE TABLE IF NOT EXISTS `transactions` (
+                                       `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                                       `tx_date` datetime DEFAULT NULL,
+                                       `usersId` int(10) unsigned NOT NULL,
+                                       `type` char(1) NOT NULL,
+                                       `amount` decimal(10,2)  NOT NULL,
+                                       PRIMARY KEY (`id`),
+                                       KEY `usersId` (`usersId`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

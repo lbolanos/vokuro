@@ -38,10 +38,12 @@ try {
     */
     $application = new Application($di);
 
+	$di->getShared('db')->begin();
     echo $application->handle()
         ->getContent();
-
+	$di->getShared('db')->commit();
 } catch (Exception $e) {
+	$di->getShared('db')->rollback();
 	echo $e->getMessage(), '<br>';
 	echo nl2br(htmlentities($e->getTraceAsString()));
 }

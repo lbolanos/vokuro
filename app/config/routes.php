@@ -14,4 +14,21 @@ $router->add('/reset-password/{code}/{email}', [
     'action' => 'resetPassword'
 ]);
 
+$router->add('/retirar/', [
+	'controller' => 'atm',
+	'action' => 'retirar'
+]);
+
+
+$router->add('/getbalance/', [
+	'controller' => 'atm',
+	'action' => 'getbalance'
+]);
+
+
+$router->add('/transferir/', [
+	'controller' => 'atm',
+	'action' => 'transferir'
+]);
+
 return $router;

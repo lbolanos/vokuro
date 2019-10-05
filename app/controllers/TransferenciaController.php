@@ -21,58 +21,61 @@ class TransferenciaController extends ControllerBase
         $this->view->setTemplateBefore('private');
 		$form = new TranferenciaForm();
         if ($this->request->isPost()) {
-			$description = "";
-			$success = "N";
-			$amount = 0;
-			$userId = 0;
 			if ($this->security->checkToken()) {
 				$this->flash->error("Security Token Error");
 				$this->view->txResult = "Security Token Error";
 			} else {
-				$amount = $this->request->getPost('amount');
-				if ($amount <= 0) {
-					$this->view->txResult = "Cantidad debe ser mayor a cero";
-				} else {
-					$userFrom = $this->auth->getUser();
-					/** @var Users $userTo */
-					$userTo = Users::findFirstById($this->request->getPost('userId'));
-					$description = $this->request->getPost('userId');
-					if ($userTo) {
-						if( $userTo->id != $userFrom->id) {
-							$sql = <<<SQL
-								UPDATE users 
-								SET accountBalance = accountBalance - :amount
-								WHERE id = :id 
-									AND ( accountBalance - :amount ) > 0
-SQL;
-							$count = BasePHQLHelper::executeNativeUpdate(null, __FUNCTION__, $sql, [':id' => $userFrom->id, ':amount' => $amount]);
-							if ($count > 0) {
-								$userId = $userTo->id;
-								$description = $userFrom->name;
-								$sql = <<<SQL
-								UPDATE users 
-								SET accountBalance = accountBalance + :amount
-								WHERE id = :id 
-SQL;
-								$count = BasePHQLHelper::executeNativeUpdate(null, __FUNCTION__, $sql, [':id' => $userTo->id, ':amount' => $amount]);
-								$this->view->txResult = "Transferencia Exitosa";
-								$success = "Y";
-								Transactions::createTx($amount, $this->view->txResult, $description, $success, $userId);
-							} else {
-								$this->view->txResult = "No cuenta con suficientes fondos";
-							}
-							$userId = $userFrom->id;
-							$description = $userTo->name;
-						} else {
-							$this->view->txResult = "No se puede transferir a su misma cuenta";
-						}
-					} else {
-						$this->view->txResult = "Cuenta No encontrada";
-					}
-				}
+				$this->view->txResult = self::transferir($this->request->getPost('amount'), $this->auth->getUser(), $this->request->getPost('userId'));
 			}
-			Transactions::createTx($amount, $this->view->txResult, $description, $success, $userId, Transactions::TYPE_TRANSFER);
         }
 		$this->view->form = $form;
     }
+
+    public static function transferir($amount, $userFrom, $userToId) {
+		$description = "";
+		$success = "N";
+		$userId = 0;
+		if ($amount <= 0) {
+			$txResult = "Cantidad debe ser mayor a cero";
+		} else {
+			/** @var Users $userTo */
+			$userTo = Users::findFirstById($userToId);
+			$description = $userToId;
+			if ($userTo) {
+				if( $userTo->id != $userFrom->id) {
+					$sql = <<<SQL
+							UPDATE users 
+							SET accountBalance = accountBalance - :amount
+							WHERE id = :id 
+								AND ( accountBalance - :amount ) > 0
+SQL;
+					$count = BasePHQLHelper::executeNativeUpdate(null, __FUNCTION__, $sql, [':id' => $userFrom->id, ':amount' => $amount]);
+					if ($count > 0) {
+						$userId = $userTo->id;
+						$description = $userFrom->name;
+						$sql = <<<SQL
+							UPDATE users 
+							SET accountBalance = accountBalance + :amount
+							WHERE id = :id 
+SQL;
+						$count = BasePHQLHelper::executeNativeUpdate(null, __FUNCTION__, $sql, [':id' => $userTo->id, ':amount' => $amount]);
+						$txResult = "Transferencia Exitosa";
+						$success = "Y";
+						Transactions::createTx($amount, $txResult, $description, $success, $userId);
+					} else {
+						$txResult = "No cuenta con suficientes fondos";
+					}
+					$userId = $userFrom->id;
+					$description = $userTo->name;
+				} else {
+					$txResult = "No se puede transferir a su misma cuenta";
+				}
+			} else {
+				$txResult = "Cuenta No encontrada";
+			}
+		}
+		Transactions::createTx($amount, $txResult, $description, $success, $userId, Transactions::TYPE_TRANSFER);
+		return $txResult;
+	}
+
 }
